@@ -16,3 +16,67 @@ Il est recommander d'utiliser des standards tels que JSONAPI (pour les données)
  Ainsi, en utilisant des API standards qui ne sont liées à aucun langage en particulier, on obtient des templates extrêmement interopérables. 
 
 Notez que l'usage d'Homeostasis n'est pas restreint à la génération de page web, et peut être utiliser pour n'importe quelle type de réponse utilisant des templates.
+
+## How to use Homeostasis?
+
+    <?homeostasis version="1.0"?>
+	<constants>
+	 <!-- Two constants.  -->
+	 
+	 <static_cache_duration>"24h"</static_cache_duration>
+	 <!-- (string) static_cache_duration="24" -->
+	  
+		<acl_right>"article.edit", "article.view"</acl_right>
+	 <!-- (array) acl_right= ["article.edit", "article.view"] -->
+	    
+	</constants>
+	<vars>
+	 <!-- Some variables. The "by" attribute means that the definition is given as parameter(s) to a service, and the return value will be assign to the variable. -->
+	 
+	 <id by="request.get" as="integer">"id"</id>
+	 <!-- (integer) id=request.get("id") -->
+	 
+	 <logs by="article.processRequest" as="dictionary" />
+	 <!-- (dictionnary) logs=article.processRequest() -->
+	 
+	 <response by="article.get" as="dictionary">{"id" : "{{id}}"}</response>
+	 <!-- (dictionnary) response=article.get({"id" : "3"}) -->
+	 
+	 <article as="dictionary">{{{json response.data}}}</article>
+	 <!-- The "json" helper will translate dictionary to JSON String. -->
+	 <!-- Assuming response follow the JSONAPI in this exemple -->		
+	 
+	 <title>"Article num {{id}} - {{article.title}}"</title>
+	 <!-- Nested definition for variables (and constants) reusability -->
+	 <!-- (you can use nested definitions on constant declarations too) -->
+	 
+	</vars>
+	<?handlebars version="2.0"?>
+	<!doctype html>
+	<html>
+	<head>
+		<title>{{title}}</title>
+	</head>
+	<body>
+		
+		<p>Hello {{name}} !</p>
+		
+		<ul class="process_result">
+		  {{#each logs}}
+			<li class="{{type}}">{{message}}</li>
+		  {{/each}}
+		</ul>
+		
+		<h1>{{article.title}}</h1>
+		<div>{{article.content}}</div>
+
+	</body>
+	</html>
+
+## Explanations
+Todo : Décrire le fichier précédent.
+Todo : Structured assignation (the "key" attribute)
+
+## Implementations
+Todo
+HomeostasisPHP, HomeostasisJS ...
